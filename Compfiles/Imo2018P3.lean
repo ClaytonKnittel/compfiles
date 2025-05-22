@@ -33,25 +33,29 @@ namespace Imo2018P3
 structure Coords where
 (row : ℕ) (col : ℕ)
 
+namespace Coords
+
 def left_child (c : Coords) : Coords :=
  ⟨c.row.succ, c.col⟩
 
 def right_child (c : Coords) : Coords :=
   ⟨c.row.succ, c.col.succ⟩
 
+end Coords
+
 /--
 antipascal triangle with n rows
 -/
 structure antipascal_triangle (n : ℕ) where
 (f : Coords → ℕ)
-(antipascal : ∀ x : Coords, x.row + 1 < n ∧ x.col ≤ x.row →
-  f x + f (left_child x) = f (right_child x) ∨
-  f x + f (right_child x) = f (left_child x))
+(antipascal : ∀ x : Coords, x.row < n ∧ x.col ≤ x.row →
+  f x + f x.left_child = f x.right_child ∨
+  f x + f x.right_child = f x.left_child)
 
 def exists_desired_triangle : Prop :=
    ∃ t : antipascal_triangle 2018,
-     ∀ n, 1 ≤ n → n ≤ ∑ i ∈ Finset.range 2018, (i + 1) →
-         ∃ r, r ≤ 2018 ∧ ∃ c, c < r ∧ t.f ⟨r,c⟩ = n
+     ∀ n ≥ 1, n ≤ ∑ i ∈ Finset.range 2018, (i + 1) →
+              ∃ r < 2018, ∃ c < r, t.f ⟨r,c⟩ = n
 
 snip begin
 
